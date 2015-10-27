@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление статей</title>
+    <script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+    <script src="http://tinymce.cachefly.net/4.2/tinymce.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script>tinymce.init({selector:'textarea'});</script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">Заголовок ссылка</a>
+            <div id="navbar" class="navbar-collapse collapse navbar-form navbar-right">
+                <p class="info_p" style="color: azure"></p>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container" style="padding-top: 30px">
+    <h2>Заголовок статьи</h2>
+    <input type='text' id='nameInput' placeholder='Заголовок' style="float: none; width: 40%">
+    <textarea id='messageInput'></textarea>
+    <a id="submit" class="btn btn-default"btn >Добавить статью</a>
+</div>
+
+<script>
+    $(document).ready(function(){
+        var myDataRef = new Firebase('https://fiery-heat-4880.firebaseio.com/users/');
+        myDataRef.once("value", function(data) {
+            var username = data.val();
+            $('.info_p').text('Добро пожаловать ' + username.user_name);
+        });
+    });
+
+    $('#submit').click(function(){
+        var myDataRef = new Firebase('https://fiery-heat-4880.firebaseio.com/news/');
+        var name = $('#nameInput').val();
+        var text = tinyMCE.activeEditor.getContent({format : 'text'});
+        myDataRef.push({name: name, text: text}, function(error) {
+            if (error) {
+                alert("Статья не добавлена. Ошибка: ." + error);
+            } else {
+                alert("Статья добавлена.");
+            }
+        });
+        $('#nameInput').val('');
+        tinyMCE.activeEditor.setContent('');
+    });
+</script>
+</body>
+
+</body>
+</html>
